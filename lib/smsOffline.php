@@ -4,8 +4,9 @@ class SmsOffline {
     public $phoneNumber = null; // phone number
 	public $operator    = null; // The operator, could be :Orange, Vodafone sau Cosmote
 	public $uniqueCode 	= null; // The UNIQUE CODE what you set in Admin MobilPay
-    // public $shortNumber = null; // Mobilpay sender number
+    // public $mobilpayShortNumber; // the mobilpay short number
 	
+	const MOBILPAY_CONFIRM_KEY			= " da"; // have to begin with a white space
 
 	const ERROR_INVALID_PHONE_NUMBER    = 1;
 	const ERROR_INVALID_DESTINATION     = 2;
@@ -24,7 +25,6 @@ class SmsOffline {
 	
 	public function __construct($data) {
         if(!empty($data)) {
-			// die(print_r($data));
             self::setOperator( $data ['destination'] );
 		    self::setPhoneNumber( $data ['sender'] );
         } else {

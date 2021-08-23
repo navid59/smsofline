@@ -13,23 +13,6 @@ class Notify {
             exit;
         }
 
-        //////////////////
-        // $url = $this->notifyURL;
-        // // $url = 'url_to_post';
-        // $data = array("first_name" => "First name","last_name" => "last name","email"=>"email@gmail.com","addresses" => array ("address1" => "some address" ,"city" => "city","country" => "CA", "first_name" =>  "Mother","last_name" =>  "Lastnameson","phone" => "555-1212", "province" => "ON", "zip" => "123 ABC" ) );
-
-        // $postdata = json_encode($data);
-
-        // $ch = curl_init($url); 
-        // curl_setopt($ch, CURLOPT_POST, 1);
-        // curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-        // curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-        // $result = curl_exec($ch);
-        // curl_close($ch);
-        // print_r ($result);
-        //////////////////
-
         $url = $this->notifyURL;
         $ch = curl_init($url);
         
@@ -38,7 +21,7 @@ class Notify {
   
         // To do a regular HTTP POST like 'application/x-www-form-urlencoded'
         curl_setopt($ch, CURLOPT_POST, true);
-        
+
         // Attach encoded JSON string to the POST fields
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
   
