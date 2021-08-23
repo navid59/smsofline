@@ -25,6 +25,6 @@ setStrLog($json);
 // Simulate result
 $result['status']   = true; 
 $result['code']     = 1; 
-$result['message']  = 'An static message to continue';
+$result['message']  = 'Merchant Notified';
 
 echo json_encode($result, true);
