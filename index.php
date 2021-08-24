@@ -5,6 +5,8 @@ error_reporting(E_ALL);
 
 require_once('lib/smsOffline.php');
 require_once('lib/cosmote.php');
+require_once('lib/vodafone.php');
+require_once('lib/cosmote.php');
 require_once('lib/notify.php');
 require_once('lib/log.php');
 
@@ -14,20 +16,10 @@ if(isset($_GET['rmLog'])) {
     exit;
 }
 
-/**
- * Just to log in Developing
- */
-// $httpInput = file_get_contents('php://input'); // Takes raw data from the request
-// Log::setArrLog(getallheaders());
-// Log::setArrLog($httpInput);
-
-// exit; // Temporary STOP
-
-// define( "MOBILPAY_UNIQUE_CODE", "tst" );
-// define( "MOBILPAY_SENDER_NUMBER", "7415" ); // AICI PROBLEMA
 
 $in_db = true; // folosit pentru teste, verificam daca astept de la numarul de telefon cod_confirmare  + da
 $data = $_REQUEST;
+
 
 // $smsOffline = new SmsOffline( $data );
 $smsOffline = new SmsOffline();
@@ -59,45 +51,28 @@ if(in_array($smsOffline->operator, SmsOffline::OPERATOR_ARR)) {
 	 * */
 	$notifyFeedback = $notify->sendNotify($notifyArr);
 
-	if ($smsOffline->operator === SmsOffline::OPERATOR_COSMOTE_NAME) {
-		$op = new Cosmote();
-		$op->reciveMsg 	 		 = $data['message'];
-		$op->phoneNumber 		 = $data['sender'];
-		$op->operator 	 		 = SmsOffline::OPERATOR_COSMOTE_NAME;
-		$op->uniqueCode  		 = $smsOffline->uniqueCode; // ?????? NOT HAPPY WITH THIS VAR
-		$op->mobilpayShortNumber = $smsOffline->mobilpayShortNumber; // ?????? NOT HAPPY WITH THIS VAR too
-		$op->merchantVerifyURL 	 = $notify->verifyURL;
-
-		$op->makeOperation();
+	switch($smsOffline->operator) {
+		case SmsOffline::OPERATOR_COSMOTE_NAME:
+			$op = new Cosmote();
+			break;
+		case SmsOffline::OPERATOR_VODAFONE_NAME:
+			$op = new Vodafone();
+			break;
+		case SmsOffline::OPERATOR_ORANGE_NAME:
+			$op = new Orange();
+			break;
+		default :
+			throw new Exception( "Oppps! There is a problem, verify the data!");
 	}
 
-	/** Customize it for Vodafone // CURRENTLY IS COSMOTE  */
-	if ($smsOffline->operator === SmsOffline::OPERATOR_VODAFONE_NAME) {
-		$op = new Cosmote();
-		$op->mobilpayShortNumber = "7415"; // ??????????????????
-		$op->reciveMsg 	 		 = $data['message'];
-		$op->phoneNumber 		 = $data['sender'];
-		$op->operator 	 		 = SmsOffline::OPERATOR_VODAFONE_NAME;
-		$op->uniqueCode  		 = $smsOffline->uniqueCode; // ?????? NOT HAPPY WITH THIS VAR
-		// $op->mobilpayShortNumber = $smsOffline->mobilpayShortNumber; // ?????? NOT HAPPY WITH THIS VAR too
+	$op->reciveMsg 	 		 = $data['message'];
+	$op->phoneNumber 		 = $data['sender'];
+	$op->operator 	 		 = SmsOffline::OPERATOR_COSMOTE_NAME;
+	$op->uniqueCode  		 = $smsOffline->uniqueCode; // ?????? NOT HAPPY WITH THIS VAR
+	$op->mobilpayShortNumber = $smsOffline->mobilpayShortNumber; // ?????? NOT HAPPY WITH THIS VAR too
+	$op->merchantVerifyURL 	 = $notify->verifyURL;
 
-		$op->makeOperation();
-	}
-
-	/** Customize it for Orange // CURRENTLY IS COSMOTE  */
-	if ($smsOffline->operator === SmsOffline::OPERATOR_ORANGE_NAME) {
-		$op = new Cosmote();
-		$op->mobilpayShortNumber = "7415"; // ???????????????????????
-		$op->reciveMsg 	 		 = $data['message'];
-		$op->phoneNumber 		 = $data['sender'];
-		$op->operator 	 		 = SmsOffline::OPERATOR_ORANGE_NAME;
-		$op->uniqueCode  		 = $smsOffline->uniqueCode; // ?????? NOT HAPPY WITH THIS VAR
-		// $op->mobilpayShortNumber = $smsOffline->mobilpayShortNumber; // ?????? NOT HAPPY WITH THIS VAR too
-		
-		$op->makeOperation();
-	}
+	$op->makeOperation();
 } else {
 	throw new Exception( "The operation is not found!!!");
 }
-
-

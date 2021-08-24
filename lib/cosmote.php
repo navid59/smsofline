@@ -43,7 +43,7 @@ class Cosmote extends SmsOffline {
 				/*
 				* daca are bani in cont, si plata se va face, va primi raspunsul trimis acum
 				* daca staus e TRUE intamna ca are bani,... si tot e in regula
-				* alfel respuns o sa fii Nehativ 
+				* alfel respuns o sa fii Negativ 
 				*/ 
 				if ($verifyResultArr->status) {
 					// daca status e true 
@@ -59,25 +59,3 @@ class Cosmote extends SmsOffline {
 		}
 	}
 }
-
-
-
-	// if ($_GET ['message'] == $smsOffline->uniqueCode) { // initiem plata
-		// // verificam daca in baza de date exista numarul de telefon $_GET[sender] si care astepta raspunsul
-		// //daca nu, il inseram in baza de date si il rugam sa trimtia codul + da
-		// SmsOffline::sendResponse( "Pentru a finaliza plata va rugam trimiteti la " . MOBILPAY_SENDER_NUMBER . "0 " . $smsOffline->uniqueCode . " da", 0, 0 );
-	
-	// } elseif ($_GET ['message'] == $smsOffline->uniqueCode . " da") {
-	// 	// verificam in baza de date daca a trimis initial cuvantul  de test
-	// 	// daca da
-		
-
-	// 	if ($in_db) {
-	// 		// daca are bani in cont, si plata se va face, va primi raspunsul trimis acum:
-	// 		SmsOffline::sendResponse( "Pentru a avea acces la ce ati comandat introduceti codul UN_COD_UNIC", 1, 0 );
-	// 	} else {
-	// 		SmsOffline::sendResponse( "Pentru a finaliza plata va rugam trimiteti la " . MOBILPAY_SENDER_NUMBER . "0 " . $smsOffline->uniqueCode . " da", 0, 0 );
-	// 	}
-	// } else {
-	// 	SmsOffline::sendResponse( "Mesajul nu este corect, va rugam trimiteti la " . MOBILPAY_SENDER_NUMBER . " un SMS cu codul " . $smsOffline->uniqueCode, 0, 0 );
-	// }

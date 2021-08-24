@@ -13,13 +13,6 @@ $jsonData = file_get_contents('php://input');
 // Log incoming data 
 log::setStrLog($jsonData, 'merchantVerifyOrder.log.txt');
 
-// $arrData  = json_decode($jsonData);
-//  if(isset($arrData['sender']) && !empty($arrData['sender'])) {
-//      $sender = $arrData['sender'];
-//  } else {
-//     $sender = null;
-//  }
-
 
 // Simulate confirm code
 $status = rand(0,1);
