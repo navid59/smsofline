@@ -1,0 +1,18 @@
+{"sender":"0732965421"} 
+{"status":0,"code":null,"message":"Your order is NOT confirmed!!!"} 
+{"sender":"0732965421"} 
+{"status":0,"code":null,"message":"Your order is NOT confirmed!!!"} 
+{"sender":"0732933900"} 
+{"status":1,"code":"tI0xRG3ZMq","message":"Your order is confirmed"} 
+{"sender":"0732933900"} 
+{"status":1,"code":"5u5ARTnEBR","message":"Your order is confirmed"} 
+{"sender":"0732933900"} 
+{"status":1,"code":"zRR9xL0HgR","message":"Your order is confirmed"} 
+{"sender":"0732933900"} 
+{"status":0,"code":null,"message":"Your order is NOT confirmed!!!"} 
+{"sender":"0732933900"} 
+{"status":1,"code":"yfAQRvSfhg","message":"Your order is confirmed"} 
+{"sender":"0732933900"} 
+{"status":0,"code":null,"message":"Your order is NOT confirmed!!!"} 
+{"sender":"0732933900"} 
+{"status":1,"code":"dTZUuppCRd","message":"Your order is confirmed"} 

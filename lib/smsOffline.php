@@ -1,10 +1,10 @@
 <?php
 
 class SmsOffline {
-    public $phoneNumber = null; // phone number
-	public $operator    = null; // The operator, could be :Orange, Vodafone sau Cosmote
-	public $uniqueCode 	= null; // The UNIQUE CODE what you set in Admin MobilPay
-    // public $mobilpayShortNumber; // the mobilpay short number
+    public $phoneNumber 		= null; // phone number
+	public $operator    		= null; // The operator, could be :Orange, Vodafone sau Cosmote
+	public $uniqueCode 			= null; // The UNIQUE CODE what you set in Admin MobilPay
+    public $mobilpayShortNumber = null; // the mobilpay short number
 	
 	const MOBILPAY_CONFIRM_KEY			= " da"; // have to begin with a white space
 
@@ -23,14 +23,22 @@ class SmsOffline {
 		self::OPERATOR_COSMOTE_NAME
 	);
 	
-	public function __construct($data) {
-        if(!empty($data)) {
-            self::setOperator( $data ['destination'] );
-		    self::setPhoneNumber( $data ['sender'] );
-        } else {
-            throw new Exception( "invalid data");
-        }
+	public function __construct() {
+		//
 	}
+
+	// public function __construct($data) {
+    //     if(!empty($data)) {
+    //         if(empty($data ['destination'])){
+	// 			throw new Exception( "invalid Destination");
+	// 		}
+	// 		if(empty($data ['sender'])){
+	// 			throw new Exception( "invalid Sender");	
+	// 		}
+    //     } else {
+    //         throw new Exception( "invalid data");
+    //     }
+	// }
 	
 	static public function checkPhoneNumber($phoneNumber) {
 		if (! $phoneNumber) {
@@ -51,20 +59,20 @@ class SmsOffline {
 		return false;
 	}
 	
-	private function setPhoneNumber($phoneNumber) {
+	public function setPhoneNumber($phoneNumber) {
 		if (! self::checkPhoneNumber( $phoneNumber )) {
 			throw new Exception( "invalid phone number", self::ERROR_INVALID_PHONE_NUMBER );
 		}
 		$this->phoneNumber = $phoneNumber;
 	}
 
-	private function setOperator($destinationNumber) {
+	public function setOperator($destinationNumber) {
 		if (! self::checkDestionationNumber( $destinationNumber )) {
 			throw new Exception( "operator not found", self::ERROR_OPERATOR_NOT_FOUND );
 		}
 		
 		if (preg_match( '/^10([0-9]{4})0000/', $destinationNumber, $c )) {
-			if ($c [1] != MOBILPAY_SENDER_NUMBER) {
+			if ($c [1] != $this->mobilpayShortNumber) {
 				throw new Exception( "Invalid destionation", self::ERROR_INVALID_DESTINATION );
 			}
 			$this->operator = self::OPERATOR_ORANGE_NAME;
@@ -72,7 +80,7 @@ class SmsOffline {
 		}
 		
 		if (preg_match( '/^217010194163([0-9]{4})/', $destinationNumber, $c )) {
-			if ($c [1] != MOBILPAY_SENDER_NUMBER) {
+			if ($c [1] != $this->mobilpayShortNumber) {
 				throw new Exception( "Invalid destionation", self::ERROR_INVALID_DESTINATION );
 			}
 			$this->operator = self::OPERATOR_VODAFONE_NAME;
@@ -80,7 +88,7 @@ class SmsOffline {
 		}
 		
 		if (preg_match( '/^085120083126([0-9]{4,5})/', $destinationNumber, $c )) {
-			if ($c [1] != MOBILPAY_SENDER_NUMBER && $c [1] != MOBILPAY_SENDER_NUMBER . "0") {
+			if ($c [1] != $this->mobilpayShortNumber && $c [1] != $this->mobilpayShortNumber . "0") {
 				throw new Exception( "Invalid destionation", self::ERROR_INVALID_DESTINATION );
 			}
 			$this->operator = self::OPERATOR_COSMOTE_NAME;

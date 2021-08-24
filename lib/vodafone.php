@@ -5,7 +5,7 @@
  */
 class Vodafone extends SmsOffline {
 	public $reciveMsg; 			 // the message what Cellphone owner sent
-	public $mobilpayShortNumber; // the mobilpay short number
+	// public $mobilpayShortNumber; // the mobilpay short number
 	public function __construct() {
 		//
 	}

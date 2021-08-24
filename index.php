@@ -24,47 +24,59 @@ if(isset($_GET['rmLog'])) {
 // exit; // Temporary STOP
 
 // define( "MOBILPAY_UNIQUE_CODE", "tst" );
-define( "MOBILPAY_SENDER_NUMBER", "7415" ); // AICI PROBLEMA
-$in_db = true; // folosit pentru teste, verificam daca astept de la numarul de telefon cod_confirmare  + da
+// define( "MOBILPAY_SENDER_NUMBER", "7415" ); // AICI PROBLEMA
 
-$smsOffline = new SmsOffline( $_REQUEST );
-// $smsOffline->uniqueCode 		 = "tst";
+$in_db = true; // folosit pentru teste, verificam daca astept de la numarul de telefon cod_confirmare  + da
+$data = $_REQUEST;
+
+// $smsOffline = new SmsOffline( $data );
+$smsOffline = new SmsOffline();
 $smsOffline->uniqueCode 		 = "p4321";
 $smsOffline->mobilpayShortNumber = "7415";
 
+$smsOffline->setOperator( $data ['destination'] );
+$smsOffline->setPhoneNumber( $data ['sender'] );
+		
 
 /** to notify Merchant  */
 $notify  = new Notify();
 $notify->notifyURL = 'https://navid.ro/smsOff/merchant/';
+$notify->verifyURL = 'https://navid.ro/smsOff/merchant/verifyOrder.php';
 
 Log::setArrLog($_GET);
+Log::setArrLog($smsOffline);
 Log::setStrLog($smsOffline->operator);
 
 if(in_array($smsOffline->operator, SmsOffline::OPERATOR_ARR)) {
 	$notifyArr = array(
-		'sender' 	=> $_REQUEST['sender'],
-		'message' 	=> $_REQUEST['message'],
-		'dateTime' 	=> $_REQUEST['timestamp'] //use preg_match to make d-m-Y H:i:s
+		'sender' 	=> $data['sender'],
+		'message' 	=> $data['message'],
+		'dateTime' 	=> $data['timestamp'] //use preg_match to make d-m-Y H:i:s
 	); 
-	$notifyFeedback = $notify->sendNotify($notifyArr); // Notify for first time
+	/**
+	 * Notify merchant for first time
+	 * Merchant can save the information on Database
+	 * */
+	$notifyFeedback = $notify->sendNotify($notifyArr);
 
 	if ($smsOffline->operator === SmsOffline::OPERATOR_COSMOTE_NAME) {
 		$op = new Cosmote();
-		$op->mobilpayShortNumber = "7415";
-		$op->reciveMsg 	 		 = $_REQUEST['message'];
-		$op->phoneNumber 		 = $_REQUEST['sender'];
+		$op->reciveMsg 	 		 = $data['message'];
+		$op->phoneNumber 		 = $data['sender'];
 		$op->operator 	 		 = SmsOffline::OPERATOR_COSMOTE_NAME;
 		$op->uniqueCode  		 = $smsOffline->uniqueCode; // ?????? NOT HAPPY WITH THIS VAR
-		// $op->mobilpayShortNumber = $smsOffline->mobilpayShortNumber; // ?????? NOT HAPPY WITH THIS VAR too
+		$op->mobilpayShortNumber = $smsOffline->mobilpayShortNumber; // ?????? NOT HAPPY WITH THIS VAR too
+		$op->merchantVerifyURL 	 = $notify->verifyURL;
 
 		$op->makeOperation();
 	}
 
+	/** Customize it for Vodafone // CURRENTLY IS COSMOTE  */
 	if ($smsOffline->operator === SmsOffline::OPERATOR_VODAFONE_NAME) {
 		$op = new Cosmote();
-		$op->mobilpayShortNumber = "7415";
-		$op->reciveMsg 	 		 = $_REQUEST['message'];
-		$op->phoneNumber 		 = $_REQUEST['sender'];
+		$op->mobilpayShortNumber = "7415"; // ??????????????????
+		$op->reciveMsg 	 		 = $data['message'];
+		$op->phoneNumber 		 = $data['sender'];
 		$op->operator 	 		 = SmsOffline::OPERATOR_VODAFONE_NAME;
 		$op->uniqueCode  		 = $smsOffline->uniqueCode; // ?????? NOT HAPPY WITH THIS VAR
 		// $op->mobilpayShortNumber = $smsOffline->mobilpayShortNumber; // ?????? NOT HAPPY WITH THIS VAR too
@@ -72,11 +84,12 @@ if(in_array($smsOffline->operator, SmsOffline::OPERATOR_ARR)) {
 		$op->makeOperation();
 	}
 
+	/** Customize it for Orange // CURRENTLY IS COSMOTE  */
 	if ($smsOffline->operator === SmsOffline::OPERATOR_ORANGE_NAME) {
 		$op = new Cosmote();
-		$op->mobilpayShortNumber = "7415";
-		$op->reciveMsg 	 		 = $_REQUEST['message'];
-		$op->phoneNumber 		 = $_REQUEST['sender'];
+		$op->mobilpayShortNumber = "7415"; // ???????????????????????
+		$op->reciveMsg 	 		 = $data['message'];
+		$op->phoneNumber 		 = $data['sender'];
 		$op->operator 	 		 = SmsOffline::OPERATOR_ORANGE_NAME;
 		$op->uniqueCode  		 = $smsOffline->uniqueCode; // ?????? NOT HAPPY WITH THIS VAR
 		// $op->mobilpayShortNumber = $smsOffline->mobilpayShortNumber; // ?????? NOT HAPPY WITH THIS VAR too
@@ -84,7 +97,7 @@ if(in_array($smsOffline->operator, SmsOffline::OPERATOR_ARR)) {
 		$op->makeOperation();
 	}
 } else {
-	die('SNED REPLY SMS WITH MSG, THE OPERATION IS NOT FOUND!!!');
+	throw new Exception( "The operation is not found!!!");
 }
 
 

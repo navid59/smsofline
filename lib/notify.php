@@ -1,9 +1,9 @@
 <?php
 class Notify {
     public $notifyURL = null;   // URL to notify merchant
+    public $verifyURL = null;   // URL to Verify order status
     public function __construct() {
         //
-        // $xxx = new \StdClass();
     }
 
     // Send notification json
@@ -17,7 +17,6 @@ class Notify {
         $ch = curl_init($url);
         
         $payload = json_encode($jsonStr); // json DATA
-        // die($payload);
   
         // To do a regular HTTP POST like 'application/x-www-form-urlencoded'
         curl_setopt($ch, CURLOPT_POST, true);
@@ -89,6 +88,47 @@ class Notify {
         curl_close($ch);
         
         $finalResult = json_encode($arr, JSON_FORCE_OBJECT);
+        return $finalResult;
+    }
+
+    
+    // Get order status from merchant
+    public function getVerify($jsonStr) {
+        if(!isset($this->verifyURL) || is_null($this->verifyURL)) {
+            throw new \Exception('INVALID_VERIFY_URL');
+            exit;
+        }
+
+        $url = $this->verifyURL;
+        $ch = curl_init($url);
+        
+        $payload = json_encode($jsonStr); // json DATA
+    
+        // To do a regular HTTP POST like 'application/x-www-form-urlencoded'
+        curl_setopt($ch, CURLOPT_POST, true);
+
+        // Attach encoded JSON string to the POST fields
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    
+        // Set the content type to application/json
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    
+        // Return response instead of outputting
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+        // Execute the POST request
+        $result = curl_exec($ch);
+        
+        if (!curl_errno($ch)) {
+            $verifyResult = json_decode($result);
+        } else {
+            throw new Exception( "The Merchant problem!!!");
+        }
+        
+        // Close cURL resource
+        curl_close($ch);
+        
+        $finalResult = json_encode($verifyResult, JSON_FORCE_OBJECT);
         return $finalResult;
     }
 }
